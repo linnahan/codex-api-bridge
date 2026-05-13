@@ -122,6 +122,13 @@ function normalizeMessages(msgs) {
   return result
 }
 
+// Some providers (e.g. China Mobile MaaS) only support type: "function" tools.
+// Filter out non-standard tool types like "web_search".
+function filterTools(tools) {
+  if (!tools) return tools
+  return tools.filter(t => t.type === 'function' || t.type === undefined)
+}
+
 function isToolChoiceSpecific(choice) {
   return choice && typeof choice === 'object' && choice.name
 }
@@ -181,7 +188,7 @@ function handleWS(ws) {
         temperature: msg.temperature ?? 0.7,
         stream: true,
       }
-      if (msg.tools?.length) upstreamBody.tools = msg.tools
+      if (msg.tools?.length) upstreamBody.tools = filterTools(msg.tools)
       if (msg.tool_choice) {
         upstreamBody.tool_choice = isToolChoiceSpecific(msg.tool_choice)
           ? { type: msg.tool_choice.type || 'function', function: { name: msg.tool_choice.name } }
@@ -351,7 +358,7 @@ async function handleHTTP(body, res) {
       max_tokens: body.max_output_tokens ?? 4096,
       temperature: body.temperature ?? 0.7,
     }
-    if (body.tools?.length) bodyTemplate.tools = body.tools
+    if (body.tools?.length) bodyTemplate.tools = filterTools(body.tools)
     if (body.tool_choice) {
       bodyTemplate.tool_choice = isToolChoiceSpecific(body.tool_choice)
         ? { type: body.tool_choice.type || 'function', function: { name: body.tool_choice.name } }
