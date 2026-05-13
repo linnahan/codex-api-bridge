@@ -1,0 +1,17 @@
+{
+  "name": "codex-api-bridge",
+  "version": "1.0.0",
+  "description": "Bridge OpenAI Responses API to Chat Completions API for Codex CLI / 让 Codex CLI 接入第三方 Chat Completions API",
+  "type": "module",
+  "main": "proxy.mjs",
+  "bin": {
+    "codex-api-bridge": "./proxy.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}
